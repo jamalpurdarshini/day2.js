@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secret Number Game</title>
+  </head>
+  <style>
+    /* 💅 Your modern styling here (unchanged) */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .game-container {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      transition: all 0.3s ease;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    #message {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: #cfd8dc;
+    }
+    input[type="number"] {
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+      width: 80%;
+      max-width: 200px;
+      text-align: center;
+      margin-top: 10px;
+      background: #eceff1;
+      color: #333;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      background-color: #10abf3;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0288d1;
+    }
+    #result,
+    #attemptsLeft,
+    #goodbye {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      color: #ffffff;
+    }
+    #result {
+      font-weight: bold;
+    }
+    #goodbye {
+      font-style: italic;
+      color: #ffeb3b;
+    }
+  </style>
+  <body>
+    <div class="game-container">
+      <h1>🎮 Secret Number Game</h1>
+      <p id="message">Guess the number between 1 and 10</p>
+      <input type="number" id="guessInput" min="1" max="10" />
+      <button id="submitGuess">Submit Guess</button>
+      <p id="result"></p>
+      <p id="attemptsLeft"></p>
+      <p id="goodbye"></p>
+    </div>
+    <script>
+      (function () {
+        try {
+          console.log("Level:", level);
+        } catch (err) {
+          console.log("TDZ caught:", err.message);
+        }
+        const level = "Easy";
+        function createSecretGame() {
+          const secret = 7;
+          return function (guess) {
+            if (guess === secret) return "✅ Correct!";
+            else if (guess > secret) return "📈 Too high...";
+            else return "📉 Too low...";
+          };
+        }
+        const checkGuess = createSecretGame(); // use closure
+        let attempts = 3;
+        const input = document.getElementById("guessInput");
+        const btn = document.getElementById("submitGuess");
+        const result = document.getElementById("result");
+        const attemptsLeft = document.getElementById("attemptsLeft");
+        const goodbye = document.getElementById("goodbye");
+        function welcome() {
+          document.getElementById("message").textContent =
+            "🎯 You have 3 attempts to guess!";
+        }
+        welcome();
+        btn.addEventListener("click", () => {
+          const value = parseInt(input.value);
+          if (isNaN(value) || value < 1 || value > 10) {
+            result.textContent = "❗ Please enter a number between 1 and 10!";
+            return;
+          }
+          const feedback = checkGuess(value);
+          result.textContent = feedback;
+          attempts--;
+          if (feedback === "✅ Correct!" || attempts === 0) {
+            btn.disabled = true;
+            input.disabled = true;
+            if (feedback !== "✅ Correct!") {
+              result.textContent += " ❌ Game Over!";
+            }
+            const sayGoodbye = () =>
+              (goodbye.textContent = "👋 Thanks for playing!");
+            sayGoodbye();
+          }
+          attemptsLeft.textContent = `Attempts Left: ${attempts}`;
+        });
+      })();
+    </script>
+  </body>
+</html>
